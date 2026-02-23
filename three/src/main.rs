@@ -1,28 +1,32 @@
-use std::fs;
+use std::{fmt::format, fs};
 
 fn main() {
-    // let file_path = "assets/input";
-    //
-    // let contents = fs::read_to_string(file_path)
-    //     .expect("Failed to read file");
-    //
-    // println!("{contents}")
-    //
-    get_joltage("122213");
-}
+    let file_path = "assets/input";
 
-fn get_joltage(bank: &str){
-    let bank: Vec<(usize, u32)> = bank.char_indices()
-        .filter_map(|(x, y)| y.to_digit(10).map(|digit| (x, digit)))
+    let contents = fs::read_to_string(file_path)
+        .expect("Failed to read file");
+
+    let banks: Vec<&str>  = contents.trim()
+        .split("\n")
         .collect();
 
-    let first = bank[..bank.len() - 1].iter().max_by_key(|(_x, y)| y).unwrap();
+    let sum = banks.iter().fold(0, |x, y|  x + get_max_joltage(y));
+    println!("{sum}")
+}
 
-    let second = bank[first.0..bank.len()].iter().max_by_key(|(_x, y)| y).unwrap();
+fn get_max_joltage(bank: &str) -> u32 {
+    let bank: Vec<u32> = bank.chars()
+        .filter_map(|x| x.to_digit(10))
+        .collect();
 
-    println!("{}{}", first.1, second.1)
+    let first = bank[..bank.len() - 1].iter().max().expect("couldnt find max");
 
+    let pos = bank.iter().position(|x| x == first).expect("couldnt find pos");
 
+    let second = bank[pos..].iter().max().expect("couldnt find max");
+
+   
+    format!("{}{}", first, second).parse().expect("failed to parse")
 
 }
 
