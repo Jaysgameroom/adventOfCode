@@ -1,4 +1,4 @@
-use std::{fmt::format, fs};
+use std::fs;
 
 fn main() {
     let file_path = "assets/input";
@@ -15,6 +15,7 @@ fn main() {
 }
 
 fn get_max_joltage(bank: &str) -> u32 {
+    println!("{bank}");
     let bank: Vec<u32> = bank.chars()
         .filter_map(|x| x.to_digit(10))
         .collect();
@@ -23,8 +24,10 @@ fn get_max_joltage(bank: &str) -> u32 {
 
     let pos = bank.iter().position(|x| x == first).expect("couldnt find pos");
 
-    let second = bank[pos..].iter().max().expect("couldnt find max");
+    let second = bank[pos + 1..].iter().max().expect("couldnt find max");
 
+
+    println!("{}{}", first, second);
    
     format!("{}{}", first, second).parse().expect("failed to parse")
 

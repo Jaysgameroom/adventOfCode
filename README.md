@@ -1,4 +1,4 @@
 ### Advent of code
-trying out advent of code and rust
+Trying out advent of code 2025  and learing rust
 
 _this code is probably blasphemy_
