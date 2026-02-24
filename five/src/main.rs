@@ -1,6 +1,5 @@
 use std::fs;
 use std::env;
-use std::ops::RangeInclusive;
 
 fn main() {
     let file_path = env::args().nth(1).expect("no argument");
@@ -8,22 +7,32 @@ fn main() {
     let contents = fs::read_to_string(file_path).expect("Failed to read file");
     let (ranges, ingredients) = contents.split_once("\n\n").expect("File not in two segments");
 
-    let ranges = ranges.split_whitespace().filter_map(|x| extract_range(x)).flatten();
+    println!("{ranges}");
 
-    for x in ranges {
-        println!("{x}")
-    }
+    let ranges: Vec<(u64, u64)> = ranges
+        .trim()
+        .split_whitespace()
+        .filter_map(|x| x.split_once("-"))
+        .filter_map(|(a, b)| Some((a.parse::<u64>().ok()?, b.parse::<u64>().ok()?)))
+        .collect();
+
+    let ingredients = ingredients.
+        split_whitespace()
+        .filter_map(|x| x.parse::<u64>().ok());
+
+
+    let sum = ingredients.fold(0, |acc, ing| {
+        acc + ranges.iter().any(|&(lower, upper)| {
+            ing > lower && ing < upper
+        }) as u64
+    });
+
+    println!("{sum}");
+
+
 
 
 
 }
 
-fn extract_range(string: &str) -> Option<RangeInclusive<u64>> {
-    let (first, second) = string.split_once("-")?;
-    let start: u64 = first.trim().parse().ok()?;
-    let end: u64 = second.trim().parse().ok()?;
-
-    Some(start..=end)
-
-}
 
